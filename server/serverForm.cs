@@ -25,7 +25,7 @@ namespace server
             {
                 try
                 {
-                    SocketUtils.StopServer(serverPort);
+                    ServerUtils.StopServer(serverPort);
                     isServerRunning = false;
                     button1.Text = "Start Server";
                     label2.Text = "Stopped";
@@ -39,7 +39,7 @@ namespace server
             {
                 try
                 {
-                    SocketUtils.StartServer(serverPort);
+                    ServerUtils.StartServer(serverPort);
                     button2_Click(sender, e);
                     isServerRunning = true;
                     button1.Text = "Stop Server";
@@ -81,6 +81,8 @@ namespace server
             }
 
             this.listView1.EndUpdate();
+
+            ServerUtils.SpiltInit();
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)

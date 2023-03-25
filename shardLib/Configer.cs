@@ -14,5 +14,7 @@ namespace shardLib
         public static int serverPort = 8088; 
         public static int cachePort = 8089;
         public static string ServerPath = @"C:\Users\72906\Desktop\711\Server";
+        public static string CachePath = @"C:\Users\72906\Desktop\711\Cache";
+        public static int ChunkSize = 2 * 1024;
     }
 }

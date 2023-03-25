@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using shardLib;
 
@@ -14,8 +16,10 @@ namespace cache
         private static TcpListener _listener;
         public static DateTime T = DateTime.Now;
         public static List<Files> cacheFiles = new List<Files>();
+        public static Dictionary<string, List<string>> imageCache = new Dictionary<string, List<string>>();
         public static int serverPort = Configer.serverPort;
         public static string serverIP = Configer.serverIP;
+        public static string cachePath = Configer.CachePath;
 
         public static DateTime GetFileRefreshDate()
         {
@@ -41,6 +45,9 @@ namespace cache
             stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
         }
 
+        
+        
+        
 
 
         public static void StartServer(int port)
@@ -61,7 +68,6 @@ namespace cache
 
                             var message = (SocketMessage)SocketUtils.DeserializeObject(buffer.Take(bytesRead).ToArray(), typeof(SocketMessage));
                             var receivedObject = SocketUtils.DeserializeObject(message.Data, Type.GetType(message.ObjectTypeString));
-                            Console.WriteLine("Received object: " + receivedObject);
                             if (Type.GetType(message.ObjectTypeString) == typeof(String))
                             {
                                 if ((String)receivedObject == "GetFileList")
