@@ -44,10 +44,14 @@ namespace cache
             var message = new SocketMessage(cacheFiles);
             stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
         }
+        public static Dictionary<string, List<string>> GetFileSplit()
+        {
+            string req = "GetFileSplit";
+            return (Dictionary<string, List<string>>)SocketUtils.SendMessage(serverIP, serverPort, req);
+        }
+        
 
-        
-        
-        
+
 
 
         public static void StartServer(int port)

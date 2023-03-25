@@ -41,6 +41,11 @@ namespace server
             var message = new SocketMessage(serverForm.T);
             stream.Write(SerializeObject(message), 0, SerializeObject(message).Length);
         }
+        public static void GetFileSplit(NetworkStream stream)
+        {
+            var message = new SocketMessage(imageCache);
+            stream.Write(SerializeObject(message), 0, SerializeObject(message).Length);
+        }
         public static string ByteToHex(byte[] bytes)
         {
             StringBuilder sb = new StringBuilder(bytes.Length * 2);
@@ -139,11 +144,16 @@ namespace server
                             {
                                 if ((String)receivedObject == "GetFileList")
                                 {
-                                    GetFileList(stream);                                    
+                                    GetFileList(stream);
+                                    //serverForm.addLog("GetFileList");
                                 }
                                 else if ((String)receivedObject == "GetFileRefreshDate")
                                 {
                                     GetFileRefreshDate(stream);
+                                }
+                                else if ((String)receivedObject == "GetFileSplit")
+                                {
+                                    GetFileSplit(stream);
                                 }
                             }
                         }

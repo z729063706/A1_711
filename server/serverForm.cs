@@ -29,6 +29,7 @@ namespace server
                     isServerRunning = false;
                     button1.Text = "Start Server";
                     label2.Text = "Stopped";
+                    addLog("Server Stopped");
                 }
                 catch (Exception ex)
                 {
@@ -44,6 +45,7 @@ namespace server
                     isServerRunning = true;
                     button1.Text = "Stop Server";
                     label2.Text = "Running";
+                    addLog("Server Started");
                 }
                 catch (Exception ex)
                 {
@@ -52,9 +54,14 @@ namespace server
             }
             return;
         }//start or stop
-
+        public void addLog(string message)
+        {
+            LogUtil.Log("server",message);
+            textBox1.AppendText(message+ Environment.NewLine);
+        }
         private void button2_Click(object sender, EventArgs e)
         {
+            addLog("Refreshing File List");
             T = DateTime.Now;
             F = Files.getFiles(ServerPath);
             ImageList imgList = new ImageList();
@@ -110,6 +117,7 @@ namespace server
             string newpath = ServerPath + "\\" + filename;
             File.Copy(path, newpath);
             button2_Click(sender, e);
+            addLog("File Uploaded");
         }
     }
 }
