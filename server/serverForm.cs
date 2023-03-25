@@ -7,9 +7,10 @@ namespace server
     public partial class serverForm : Form
     {
         public bool isServerRunning = false;
-        public int serverPort = 8088;
-        public static string ServerPath = @"C:\Users\72906\Desktop\711\Server";
+        public int serverPort = Configer.serverPort;
+        public static string ServerPath = Configer.ServerPath;
         public static List<Files> F = null;
+        public static DateTime T = DateTime.Now;
         public serverForm()
         {
             InitializeComponent();
@@ -50,16 +51,18 @@ namespace server
                 }
             }
             return;
-        }
+        }//start or stop
 
         private void button2_Click(object sender, EventArgs e)
         {
+            T = DateTime.Now;
             F = Files.getFiles(ServerPath);
             ImageList imgList = new ImageList();
             imgList.ImageSize = new Size(1, 200);
             listView1.SmallImageList = imgList;
             this.listView1.Clear();
             this.listView1.Columns.Clear();
+            this.imageList1.Images.Clear();
             this.listView1.SmallImageList = this.imageList1;
             this.listView1.Columns.Add("Name", 250, HorizontalAlignment.Left);
             this.listView1.Columns.Add("Size", 120, HorizontalAlignment.Left);

@@ -1,7 +1,5 @@
 using shardLib;
-using System.IO;
-using Image = System.Drawing.Image;
-namespace client
+namespace cache
 {
     internal static class Program
     {
@@ -11,8 +9,10 @@ namespace client
         [STAThread]
         static void Main()
         {
+            // To customize application configuration such as set high DPI settings or default font,
+            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new clientForm());
+            Application.Run(new cacheForm());
         }
     }
 }

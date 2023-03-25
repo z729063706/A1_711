@@ -29,9 +29,14 @@ namespace server
         //返回文件列表
         public static void GetFileList(NetworkStream stream)
         {
-            var message = new SocketMessage(serverForm.GetFiles());
+            var message = new SocketMessage(serverForm.F);
             stream.Write(SerializeObject(message), 0, SerializeObject(message).Length);
-        }   
+        }
+        public static void GetFileRefreshDate(NetworkStream stream)
+        {
+            var message = new SocketMessage(serverForm.T);
+            stream.Write(SerializeObject(message), 0, SerializeObject(message).Length);
+        }
         public static void StartServer(int port)
         {
             Task.Run(() =>
@@ -56,6 +61,10 @@ namespace server
                                 if ((String)receivedObject == "GetFileList")
                                 {
                                     GetFileList(stream);                                    
+                                }
+                                else if ((String)receivedObject == "GetFileRefreshDate")
+                                {
+                                    GetFileRefreshDate(stream);
                                 }
                             }
                         }

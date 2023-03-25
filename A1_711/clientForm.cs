@@ -5,7 +5,9 @@ namespace client
     public partial class clientForm : Form
     {
         private List<Files> F;
-        public int serverPort = 8088;
+        public int cachePort = Configer.cachePort;
+        public string cacheIP = Configer.cacheIP;
+        
         public clientForm()
         {
             InitializeComponent();
@@ -14,9 +16,10 @@ namespace client
         //设定listview1中数据
         private void Listview1_Load(object sender, EventArgs e)
         {
-            List<Files> F = ClientUtils.GetFileList(serverPort);
+            List<Files> F = SocketUtils.GetFileList(cacheIP, cachePort);
             this.listView1.Items.Clear();
             this.listView1.Columns.Clear();
+            this.imageList1.Images.Clear();
             ImageList imgList = new ImageList();
             imgList.ImageSize = new Size(1, 200);
             listView1.SmallImageList = imgList;

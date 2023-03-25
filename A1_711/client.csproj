@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="SocketUtils.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\shardLib\shardLib.csproj" />
   </ItemGroup>
 

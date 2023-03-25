@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
-using System.Net;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
-using shardLib;
+using System.Threading.Tasks;
 
-namespace client
+namespace shardLib
 {
-    internal class SocketUtils
+    public class SocketUtils
     {
         public static byte[] SerializeObject(object obj)
         {
@@ -25,7 +22,6 @@ namespace client
             string jsonString = Encoding.UTF8.GetString(data);
             return JsonSerializer.Deserialize(jsonString, type);
         }
-
         public static object SendMessage(string serverAddress, int port, object obj, int timeoutMilliseconds = 5000)
         {
             object responseObject = null;
@@ -44,7 +40,7 @@ namespace client
                             };
                             var buffer = SerializeObject(message);
                             stream.Write(buffer, 0, buffer.Length);
-                            
+
                             var responseBuffer = new byte[client.ReceiveBufferSize];
                             var readTask = stream.ReadAsync(responseBuffer, 0, client.ReceiveBufferSize);
                             if (readTask.Wait(timeoutMilliseconds))
@@ -79,7 +75,11 @@ namespace client
 
             return responseObject;
         }
-       
-
+        public static List<Files> GetFileList(string serverAddress, int port, int timeoutMilliseconds = 5000)
+        {
+            string req = "GetFileList";
+            var response = (List<Files>)SendMessage(serverAddress, port, req, timeoutMilliseconds);
+            return response;
+        }
     }
 }
