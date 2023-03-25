@@ -7,7 +7,8 @@ namespace client
         private List<Files> F;
         public int cachePort = Configer.cachePort;
         public string cacheIP = Configer.cacheIP;
-        
+        public string clientPath = Configer.ClientPath;
+
         public clientForm()
         {
             InitializeComponent();
@@ -17,6 +18,7 @@ namespace client
         private void Listview1_Load(object sender, EventArgs e)
         {
             List<Files> F = SocketUtils.GetFileList(cacheIP, cachePort);
+            this.F = F;
             this.listView1.Items.Clear();
             this.listView1.Columns.Clear();
             this.imageList1.Images.Clear();
@@ -53,7 +55,6 @@ namespace client
         {
             if (this.listView1.SelectedItems.Count > 0)
             {
-                this.listView1.SelectedItems[0].SubItems[3].Text = "Downloading";
                 this.btn.Location = new Point(this.listView1.SelectedItems[0].SubItems[3].Bounds.Left, this.listView1.SelectedItems[0].SubItems[3].Bounds.Top);
                 this.btn.Visible = true;
             }
@@ -63,7 +64,9 @@ namespace client
         {
             int selectedIndex = this.listView1.SelectedItems[0].Index;
             Files selectedFile = this.F[selectedIndex];
-            MessageBox.Show(selectedFile.Path);
+            List<string> Splits = ClientUtils.GetSplites(selectedFile.Path);
+            ClientUtils.DownloadFile(Splits, selectedFile.Path);
+            this.listView1.SelectedItems[0].SubItems[3].Text = "Downloaded";
         }
         private void Form1_Load(object sender, EventArgs e)
         {

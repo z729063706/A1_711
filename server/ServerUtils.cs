@@ -118,7 +118,13 @@ namespace server
             File.WriteAllText(filePath, json);
         }
 
-
+        public static void GetSplitFromServer(NetworkStream stream, string split)
+        {
+            string splitPath = Path.Combine(serverSplitPath, split);
+            byte[] splitData = File.ReadAllBytes(splitPath);
+            var message = new SocketMessage(splitData);
+            stream.Write(SerializeObject(message), 0, SerializeObject(message).Length);
+        }
 
 
         public static void StartServer(int port)
@@ -140,7 +146,7 @@ namespace server
                             var message = (SocketMessage)DeserializeObject(buffer.Take(bytesRead).ToArray(), typeof(SocketMessage));
                             var receivedObject = DeserializeObject(message.Data, Type.GetType(message.ObjectTypeString));
                             Console.WriteLine("Received object: " + receivedObject);
-                            if(Type.GetType(message.ObjectTypeString) == typeof(String))
+                            if (Type.GetType(message.ObjectTypeString) == typeof(String))
                             {
                                 if ((String)receivedObject == "GetFileList")
                                 {
@@ -154,6 +160,14 @@ namespace server
                                 else if ((String)receivedObject == "GetFileSplit")
                                 {
                                     GetFileSplit(stream);
+                                }
+                            }
+                            else if (Type.GetType(message.ObjectTypeString) == typeof(List<string>))
+                            {
+                                List<string> req = (List<string>)receivedObject;
+                                if (req[0] == "GetSplitFromServer")
+                                {
+                                    GetSplitFromServer(stream, req[1]);
                                 }
                             }
                         }

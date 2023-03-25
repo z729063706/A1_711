@@ -21,6 +21,17 @@ namespace cache
         public static string serverIP = Configer.serverIP;
         public static string cachePath = Configer.CachePath;
 
+        public static byte[] HexToByte(string filePath)
+        {
+            string hexString = File.ReadAllText(filePath);
+            int byteCount = hexString.Length / 2;
+            byte[] buffer = new byte[byteCount];
+            for (int i = 0; i < byteCount; i++)
+            {
+                buffer[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+            }
+            return buffer;
+        }
         public static DateTime GetFileRefreshDate()
         {
             DateTime t = DateTime.Now;
@@ -40,8 +51,40 @@ namespace cache
             {
                 cacheFiles = SocketUtils.GetFileList(serverIP, serverPort);
                 T = GetFileRefreshDate();
+                imageCache = GetFileSplit();
             }
             var message = new SocketMessage(cacheFiles);
+            stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
+        }
+        public static void GetSplites(NetworkStream stream, string filename)
+        {
+            List<string> splites = new List<string>();
+            if (imageCache.ContainsKey(filename))
+            {
+                splites = imageCache[filename];
+            }
+            var message = new SocketMessage(splites);
+            stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
+        }
+        public static void GetSplitFromServer(string splitname)
+        {
+            List<string> req = new List<string>();
+            req.Add("GetSplitFromServer");
+            req.Add(splitname);
+            byte[] split = (byte[])SocketUtils.SendMessage(serverIP, serverPort, req);
+            string splitPath = cachePath + @"\" + splitname;
+            File.WriteAllBytes(splitPath, split);
+            return;
+        }
+        public static void GetSplit(NetworkStream stream, string splitname)
+        {
+            byte[] data = null;
+            if (!File.Exists(cachePath + @"\" + splitname))
+            {
+                GetSplitFromServer(splitname);
+            }
+            data = HexToByte(cachePath + @"\" + splitname);
+            var message = new SocketMessage(data);
             stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
         }
         public static Dictionary<string, List<string>> GetFileSplit()
@@ -77,6 +120,18 @@ namespace cache
                                 if ((String)receivedObject == "GetFileList")
                                 {
                                     GetFileList(stream, T);
+                                }
+                            }
+                            else if(Type.GetType(message.ObjectTypeString) == typeof(List<string>))
+                            {
+                                List<string> req = (List<string>)receivedObject;
+                                if (req[0] == "GetSplites")
+                                {
+                                    GetSplites(stream, req[1]);
+                                }
+                                else if (req[0] == "GetSplit")
+                                {
+                                    GetSplit(stream, req[1]);
                                 }
                             }
                         }

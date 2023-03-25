@@ -9,6 +9,9 @@ namespace client
 {
     public class ClientUtils
     {
+        public static string cacheIP = Configer.cacheIP;
+        public static int cachePort = Configer.cachePort;
+        public static string clientPath = Configer.ClientPath;
         //从socket获取文件列表
         public static List<Files> GetFileList(int serverPort)
         {
@@ -17,6 +20,35 @@ namespace client
             F = (List<Files>)SocketUtils.SendMessage("127.0.0.1", serverPort, request);
             return F;
         }
-
+        public static List<string> GetSplites(string filename)
+        {
+            List<string> req = new();
+            req.Add("GetSplites");
+            req.Add(filename);
+            List<string> F = null;
+            F = (List<string>)SocketUtils.SendMessage(cacheIP, cachePort, req);
+            return F;
+        }
+        public static byte[] GetSplit(string splitname)
+        {
+            List<string> req = new();
+            req.Add("GetSplit");
+            req.Add(splitname);
+            byte[] F = null;
+            F = (byte[])SocketUtils.SendMessage(cacheIP, cachePort, req);
+            return F;
+        }
+        public static void DownloadFile(List<String> splites, string filepath)
+        {
+            string filename = filepath.Split('\\').Last();
+            string filePath = clientPath + @"\" + filename;
+            byte[] file = new byte[0];
+            foreach (string split in splites)
+            {
+                file = file.Concat(GetSplit(split)).ToArray();
+            }
+            System.IO.File.WriteAllBytes(filePath, file);
+            return;
+        }
     }
 }
