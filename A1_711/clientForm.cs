@@ -13,6 +13,10 @@ namespace client
         {
             InitializeComponent();
             Listview1_Load(this, null);
+            if (!Directory.Exists(Configer.ClientPath))
+            {
+                Directory.CreateDirectory(Configer.ClientPath);
+            }
         }
         //设定listview1中数据
         private void Listview1_Load(object sender, EventArgs e)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -14,7 +15,7 @@ namespace cache
     internal class CacheUtils
     {
         private static TcpListener _listener;
-        public static DateTime T = DateTime.Now;
+        public static DateTime TT = DateTime.Now;
         public static List<Files> cacheFiles = new List<Files>();
         public static Dictionary<string, List<string>> imageCache = new Dictionary<string, List<string>>();
         public static int serverPort = Configer.serverPort;
@@ -47,10 +48,10 @@ namespace cache
         }
         public static void GetFileList(NetworkStream stream, DateTime t)
         {
-            if (t != GetFileRefreshDate() || cacheFiles == null)
+            if (t != GetFileRefreshDate() || cacheFiles.Count == 0)
             {
                 cacheFiles = SocketUtils.GetFileList(serverIP, serverPort);
-                T = GetFileRefreshDate();
+                TT = GetFileRefreshDate();
                 imageCache = GetFileSplit();
             }
             var message = new SocketMessage(cacheFiles);
@@ -63,6 +64,27 @@ namespace cache
             {
                 splites = imageCache[filename];
             }
+            long inCacheByte = 0;
+            foreach (string split in splites)
+            {
+                string splitPath = cachePath + @"\" + split;
+                if (File.Exists(splitPath))
+                {
+                    FileInfo fileInfo = new FileInfo(splitPath);                    
+                    inCacheByte += fileInfo.Length;
+                }
+            }
+            inCacheByte = inCacheByte / 2;
+            long totalByte = 0;
+            foreach (Files file in cacheFiles)
+            {
+                if (file.Path == filename)
+                {
+                    totalByte = file.Size;
+                    break;
+                }
+            }
+            //TODO: Add a counter to get splites in cache
             var message = new SocketMessage(splites);
             stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
         }
@@ -85,7 +107,8 @@ namespace cache
             }
             data = HexToByte(cachePath + @"\" + splitname);
             var message = new SocketMessage(data);
-            stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
+            var serializedMessage = SocketUtils.SerializeObject(message);
+            stream.Write(serializedMessage, 0, serializedMessage.Length);
         }
         public static Dictionary<string, List<string>> GetFileSplit()
         {
@@ -119,7 +142,7 @@ namespace cache
                             {
                                 if ((String)receivedObject == "GetFileList")
                                 {
-                                    GetFileList(stream, T);
+                                    GetFileList(stream, TT);
                                 }
                             }
                             else if(Type.GetType(message.ObjectTypeString) == typeof(List<string>))

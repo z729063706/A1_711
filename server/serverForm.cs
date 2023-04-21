@@ -104,6 +104,14 @@ namespace server
 
         private void serverForm_Load(object sender, EventArgs e)
         {
+            if (!Directory.Exists(Configer.ServerPath))
+            {
+                Directory.CreateDirectory(Configer.ServerPath);
+                if (!Directory.Exists(Configer.ServerPath+@"\splits"))
+                {
+                    Directory.CreateDirectory(Configer.ServerPath + @"\splits");
+                }
+            }
             button2_Click(sender, e);
         }
 

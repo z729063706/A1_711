@@ -39,9 +39,9 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft YaHei UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.button1.Location = new System.Drawing.Point(612, 68);
+            this.button1.Location = new System.Drawing.Point(612, 60);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(134, 70);
+            this.button1.Size = new System.Drawing.Size(134, 62);
             this.button1.TabIndex = 0;
             this.button1.Text = "Start Cache";
             this.button1.UseVisualStyleBackColor = true;
@@ -50,9 +50,9 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(612, 197);
+            this.label1.Location = new System.Drawing.Point(612, 174);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(85, 17);
+            this.label1.Size = new System.Drawing.Size(78, 15);
             this.label1.TabIndex = 1;
             this.label1.Text = "Cache Status:";
             this.label1.Click += new System.EventHandler(this.label1_Click);
@@ -61,7 +61,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft YaHei UI", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(612, 231);
+            this.label2.Location = new System.Drawing.Point(612, 204);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(160, 45);
             this.label2.TabIndex = 2;
@@ -71,9 +71,9 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft YaHei UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.button2.Location = new System.Drawing.Point(612, 345);
+            this.button2.Location = new System.Drawing.Point(612, 304);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(134, 70);
+            this.button2.Size = new System.Drawing.Size(134, 62);
             this.button2.TabIndex = 3;
             this.button2.Text = "Clear Cache";
             this.button2.UseVisualStyleBackColor = true;
@@ -81,25 +81,26 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(20, 38);
+            this.label3.Location = new System.Drawing.Point(20, 34);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(72, 17);
+            this.label3.Size = new System.Drawing.Size(66, 15);
             this.label3.TabIndex = 4;
             this.label3.Text = "Cache Log:";
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(20, 74);
+            this.textBox1.Location = new System.Drawing.Point(20, 65);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(555, 341);
+            this.textBox1.Size = new System.Drawing.Size(555, 301);
             this.textBox1.TabIndex = 5;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // cacheForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 397);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.button2);

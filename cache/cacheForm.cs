@@ -9,6 +9,10 @@ namespace cache
         public cacheForm()
         {
             InitializeComponent();
+            if (!Directory.Exists(Configer.CachePath))
+            {
+                Directory.CreateDirectory(Configer.CachePath);
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -55,6 +59,11 @@ namespace cache
         }
 
         private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
         }

@@ -67,7 +67,7 @@ namespace server
             return s.ToString();
         }
 
-        public static async Task<Dictionary<string, List<string>>> SpiltFiles(List<Files> F)
+        public static async Task<Dictionary<string, List<string>>> SpiltFilesOld(List<Files> F)
         {
             int chuckSize = Configer.ChunkSize;
             Dictionary<string, List<string>> ImageCache = imageCache;
@@ -88,7 +88,11 @@ namespace server
                     string chunkHash = GetMd5(buffer, bytesRead);
                     string outputPath = Path.Combine(serverSplitPath, $"{chunkHash}");
                     chunkHashs.Add(chunkHash);
-                    File.WriteAllText(outputPath,ByteToHex(buffer));
+                    //TODO: Check if chunk already exists
+                    if (!File.Exists(outputPath))
+                    {
+                        File.WriteAllText(outputPath,ByteToHex(buffer));
+                    }                    
                     chunkIndex++;
                 }
                 imageCache.Add(imagePath, chunkHashs);
@@ -96,6 +100,81 @@ namespace server
             imageCache = ImageCache;
             return ImageCache;
         }
+
+
+        public static bool RabinCheck(byte a, byte b, byte c)
+        {
+            var rabin = new RabinHash(10003, 273);
+            rabin.Roll(a);
+            rabin.Roll(b);
+            rabin.Roll(c);
+            return rabin.Value % 1500 == 0;
+        }
+
+        public static int GetNextBlockSize(string filePath, long currentPosition)
+        {
+            int blockSize = 0;
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                stream.Position = currentPosition;
+                byte[] buffer = new byte[stream.Length];
+                int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                while(currentPosition + blockSize < stream.Length)
+                {
+                    if (RabinCheck(buffer[blockSize], buffer[blockSize + 1], buffer[blockSize + 2]))
+                    {
+                        blockSize = blockSize + 2;
+                        break;
+                    }
+                    blockSize = blockSize + 1;
+                }
+            }
+            return blockSize;
+        }
+
+        public static async Task<Dictionary<string, List<string>>> SpiltFiles(List<Files> F)
+        {
+            Dictionary<string, List<string>> ImageCache = imageCache;
+            foreach (Files f in F)
+            {
+                if (ImageCache.ContainsKey(f.Path))
+                {
+                    continue;
+                }
+                string imagePath = f.Path;
+                long fileSize = new FileInfo(imagePath).Length;
+                long currentPosition = 0;
+                FileStream imageStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
+                int chunkIndex = 0;
+                int chuckSize = GetNextBlockSize(imagePath, currentPosition);
+                byte[] buffer = new byte[chuckSize];
+                int bytesRead;
+                List<string> chunkHashs = new List<string>();
+                while (currentPosition < fileSize)
+                {
+                    bytesRead = await imageStream.ReadAsync(buffer, 0, chuckSize);
+                    currentPosition += bytesRead;
+                    chuckSize = GetNextBlockSize(imagePath, currentPosition);
+                    string chunkHash = GetMd5(buffer, bytesRead);
+                    string outputPath = Path.Combine(serverSplitPath, $"{chunkHash}");
+                    chunkHashs.Add(chunkHash);
+                    //TODO: Check if chunk already exists
+                    if (!File.Exists(outputPath))
+                    {
+                        File.WriteAllText(outputPath, ByteToHex(buffer));
+                    }
+                    chunkIndex++;
+                    buffer = new byte[chuckSize];
+                }
+                imageCache.Add(imagePath, chunkHashs);
+                //imageStream.Close();
+            }
+            imageCache = ImageCache;
+            return ImageCache;
+        }
+
+
+
         public static async void SpiltInit()
         {
             string cacheJson = serverSplitPath + @"\spilt.json";            
@@ -123,7 +202,8 @@ namespace server
             string splitPath = Path.Combine(serverSplitPath, split);
             byte[] splitData = File.ReadAllBytes(splitPath);
             var message = new SocketMessage(splitData);
-            stream.Write(SerializeObject(message), 0, SerializeObject(message).Length);
+            var buffer = SerializeObject(message);
+            stream.Write(buffer, 0, buffer.Length);
         }
 
 
@@ -145,7 +225,6 @@ namespace server
 
                             var message = (SocketMessage)DeserializeObject(buffer.Take(bytesRead).ToArray(), typeof(SocketMessage));
                             var receivedObject = DeserializeObject(message.Data, Type.GetType(message.ObjectTypeString));
-                            Console.WriteLine("Received object: " + receivedObject);
                             if (Type.GetType(message.ObjectTypeString) == typeof(String))
                             {
                                 if ((String)receivedObject == "GetFileList")

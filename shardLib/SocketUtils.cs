@@ -22,57 +22,60 @@ namespace shardLib
             string jsonString = Encoding.UTF8.GetString(data);
             return JsonSerializer.Deserialize(jsonString, type);
         }
-        public static object SendMessage(string serverAddress, int port, object obj, int timeoutMilliseconds = 5000)
+        public static object SendMessage(string serverAddress, int port, object obj, int timeoutMilliseconds = 500000)
         {
             object responseObject = null;
-            try
+            while (responseObject == null)
             {
-                using (var client = new TcpClient())
+                try
                 {
-                    if (client.ConnectAsync(serverAddress, port).Wait(timeoutMilliseconds))
+                    using (var client = new TcpClient())
                     {
-                        using (var stream = client.GetStream())
+                        client.ReceiveBufferSize = 8192 * 1024;
+                        if (client.ConnectAsync(serverAddress, port).Wait(timeoutMilliseconds))
                         {
-                            var message = new SocketMessage
+                            using (var stream = client.GetStream())
                             {
-                                ObjectTypeString = obj.GetType().AssemblyQualifiedName,
-                                Data = SerializeObject(obj)
-                            };
-                            var buffer = SerializeObject(message);
-                            stream.Write(buffer, 0, buffer.Length);
-
-                            var responseBuffer = new byte[client.ReceiveBufferSize];
-                            var readTask = stream.ReadAsync(responseBuffer, 0, client.ReceiveBufferSize);
-                            if (readTask.Wait(timeoutMilliseconds))
-                            {
-                                int bytesRead = readTask.Result;
-                                if (bytesRead > 0)
+                                var message = new SocketMessage
                                 {
-                                    var responseMessage = (SocketMessage)DeserializeObject(responseBuffer.Take(bytesRead).ToArray(), typeof(SocketMessage));
-                                    responseObject = responseMessage.toObject();
+                                    ObjectTypeString = obj.GetType().AssemblyQualifiedName,
+                                    Data = SerializeObject(obj)
+                                };
+                                var buffer = SerializeObject(message);
+                                stream.Write(buffer, 0, buffer.Length);
+
+                                var responseBuffer = new byte[client.ReceiveBufferSize];
+                                var readTask = stream.ReadAsync(responseBuffer, 0, client.ReceiveBufferSize);
+                                if (readTask.Wait(timeoutMilliseconds))
+                                {
+                                    int bytesRead = readTask.Result;
+                                    if (bytesRead > 0)
+                                    {
+                                        var responseMessage = (SocketMessage)DeserializeObject(responseBuffer.Take(bytesRead).ToArray(), typeof(SocketMessage));
+                                        responseObject = responseMessage.toObject();
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Read from server timed out.");
                                 }
                             }
-                            else
-                            {
-                                Console.WriteLine("Read from server timed out.");
-                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Connection to server timed out.");
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine("Connection to server timed out.");
-                    }
                 }
-            }
-            catch (SocketException ex)
-            {
-                Console.WriteLine($"SocketException: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex.Message}");
-            }
-
+                catch (SocketException ex)
+                {
+                    Console.WriteLine($"SocketException: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception: {ex.Message}");
+                }
+            }          
             return responseObject;
         }
         public static List<Files> GetFileList(string serverAddress, int port, int timeoutMilliseconds = 5000)

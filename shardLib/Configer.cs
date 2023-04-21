@@ -13,11 +13,11 @@ namespace shardLib
         public static string cacheIP = localhost;
         public static int serverPort = 8088; 
         public static int cachePort = 8089;
-        public static string BasePath = @"C:\Users\72906\Desktop\711";
+        public static string BasePath = Environment.CurrentDirectory;
         public static string ServerPath = BasePath+@"\Server";
         public static string CachePath = BasePath + @"\Cache";
         public static string ClientPath = BasePath + @"\Client";
         public static string LogPath = BasePath+@"\Log\log.txt";
-        public static int ChunkSize = 2 * 1024;
+        public static int ChunkSize = 1024 * 1024;
     }
 }

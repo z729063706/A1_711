@@ -45,7 +45,8 @@ namespace client
             byte[] file = new byte[0];
             foreach (string split in splites)
             {
-                file = file.Concat(GetSplit(split)).ToArray();
+                byte[] splitData = GetSplit(split);
+                file = file.Concat(splitData).ToArray();
             }
             System.IO.File.WriteAllBytes(filePath, file);
             return;
