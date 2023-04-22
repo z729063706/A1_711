@@ -56,6 +56,8 @@ namespace cache
             }
             var message = new SocketMessage(cacheFiles);
             stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
+            var thisForm = cacheForm.GetInstance();
+            thisForm.Invoke(new Action(() => thisForm.addLog("Forward GetFileList at" + t.ToString())));
         }
         public static void GetSplites(NetworkStream stream, string filename)
         {
@@ -87,6 +89,9 @@ namespace cache
             //TODO: Add a counter to get splites in cache
             var message = new SocketMessage(splites);
             stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
+            var thisForm = cacheForm.GetInstance();
+            thisForm.Invoke(new Action(() => thisForm.addLog("Downloading " + filename + " in cache size: " + inCacheByte.ToString() + "/" + totalByte.ToString() )));
+            thisForm.Invoke(new Action(() => thisForm.addLog(filename + " cache rate:" + (double)inCacheByte / totalByte * 100 + "% Please allow about 10 second for it" )));
         }
         public static void GetSplitFromServer(string splitname)
         {
@@ -96,6 +101,8 @@ namespace cache
             byte[] split = (byte[])SocketUtils.SendMessage(serverIP, serverPort, req);
             string splitPath = cachePath + @"\" + splitname;
             File.WriteAllBytes(splitPath, split);
+            var thisForm = cacheForm.GetInstance();
+            thisForm.Invoke(new Action(() => thisForm.addFile(splitname)));
             return;
         }
         public static void GetSplit(NetworkStream stream, string splitname)
@@ -124,8 +131,10 @@ namespace cache
         {
             Task.Run(() =>
             {
+                var thisForm = cacheForm.GetInstance();
                 _listener = new TcpListener(IPAddress.Any, port);
                 _listener.Start();
+                thisForm.Invoke(new Action(() => thisForm.addLog("Cache Started!")));
                 while (true)
                 {
                     try
@@ -143,6 +152,7 @@ namespace cache
                                 if ((String)receivedObject == "GetFileList")
                                 {
                                     GetFileList(stream, TT);
+                                    thisForm.Invoke(new Action(() => thisForm.addLog("Client GetFileList!")));
                                 }
                             }
                             else if(Type.GetType(message.ObjectTypeString) == typeof(List<string>))
@@ -151,6 +161,7 @@ namespace cache
                                 if (req[0] == "GetSplites")
                                 {
                                     GetSplites(stream, req[1]);
+                                    thisForm.Invoke(new Action(() => thisForm.addLog("Client GetSplites!")));
                                 }
                                 else if (req[0] == "GetSplit")
                                 {
@@ -170,6 +181,8 @@ namespace cache
         public static void StopServer(int port)
         {
             _listener.Stop();
+            var thisForm = cacheForm.GetInstance();
+            thisForm.Invoke(new Action(() => thisForm.addLog("Cache Stopped!")));
         }
     }
 }

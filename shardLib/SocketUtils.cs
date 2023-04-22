@@ -25,16 +25,16 @@ namespace shardLib
         public static object SendMessage(string serverAddress, int port, object obj, int timeoutMilliseconds = 500000)
         {
             object responseObject = null;
-            while (responseObject == null)
+            try
             {
-                try
+                using (var client = new TcpClient())
                 {
-                    using (var client = new TcpClient())
+                    client.ReceiveBufferSize = 8192 * 1024;
+                    if (client.ConnectAsync(serverAddress, port).Wait(timeoutMilliseconds))
                     {
-                        client.ReceiveBufferSize = 8192 * 1024;
-                        if (client.ConnectAsync(serverAddress, port).Wait(timeoutMilliseconds))
+                        using (var stream = client.GetStream())
                         {
-                            using (var stream = client.GetStream())
+                            while (responseObject == null)
                             {
                                 var message = new SocketMessage
                                 {
@@ -61,21 +61,21 @@ namespace shardLib
                                 }
                             }
                         }
-                        else
-                        {
-                            Console.WriteLine("Connection to server timed out.");
-                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Connection to server timed out.");
                     }
                 }
-                catch (SocketException ex)
-                {
-                    Console.WriteLine($"SocketException: {ex.Message}");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Exception: {ex.Message}");
-                }
-            }          
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine($"SocketException: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
             return responseObject;
         }
         public static List<Files> GetFileList(string serverAddress, int port, int timeoutMilliseconds = 5000)

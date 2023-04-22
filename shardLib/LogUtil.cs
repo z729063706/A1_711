@@ -14,7 +14,10 @@ namespace shardLib
         {
             string logMessage = string.Join(" ", messages);
             string logLine = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {logMessage}";
-
+            if (!File.Exists(logPath))
+            {
+                File.Create(logPath).Close();
+            }
             try
             {
                 File.AppendAllText(logPath, logLine + Environment.NewLine);

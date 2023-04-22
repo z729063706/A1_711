@@ -17,7 +17,7 @@ namespace shardLib
         public static string ServerPath = BasePath+@"\Server";
         public static string CachePath = BasePath + @"\Cache";
         public static string ClientPath = BasePath + @"\Client";
-        public static string LogPath = BasePath+@"\Log\log.txt";
+        public static string LogPath = BasePath+@"\log.txt";
         public static int ChunkSize = 1024 * 1024;
     }
 }

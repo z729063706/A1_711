@@ -11,6 +11,15 @@ namespace server
         public static string ServerPath = Configer.ServerPath;
         public static List<Files> F = null;
         public static DateTime T = DateTime.Now;
+        private static serverForm myFormInstance;
+        public static serverForm GetInstance()
+        {
+            if (myFormInstance == null || myFormInstance.IsDisposed)
+            {
+                myFormInstance = new serverForm();
+            }
+            return myFormInstance;
+        }
         public serverForm()
         {
             InitializeComponent();
@@ -125,7 +134,7 @@ namespace server
             string newpath = ServerPath + "\\" + filename;
             File.Copy(path, newpath);
             button2_Click(sender, e);
-            addLog("File Uploaded");
+            addLog("File Uploading and Splitting");
         }
     }
 }

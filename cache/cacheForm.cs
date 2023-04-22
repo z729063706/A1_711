@@ -1,4 +1,5 @@
 using shardLib;
+using System.Windows.Forms;
 
 namespace cache
 {
@@ -6,12 +7,26 @@ namespace cache
     {
         public bool isCacheRunning = false;
         public int cachePort = Configer.cachePort;
+        private static cacheForm myFormInstance;
+        public static cacheForm GetInstance()
+        {
+            if (myFormInstance == null || myFormInstance.IsDisposed)
+            {
+                myFormInstance = new cacheForm();
+            }
+            return myFormInstance;
+        }
         public cacheForm()
         {
             InitializeComponent();
+            myFormInstance = this;
             if (!Directory.Exists(Configer.CachePath))
             {
                 Directory.CreateDirectory(Configer.CachePath);
+            }
+            foreach (string file in Directory.GetFiles(Configer.CachePath))
+            {
+                addFile(file.ToString().Substring(Configer.CachePath.Length + 1));
             }
         }
 
@@ -62,10 +77,52 @@ namespace cache
         {
 
         }
-
+        public void addLog(string message)
+        {
+            LogUtil.Log("cache", message);
+            textBox1.AppendText(message + Environment.NewLine);
+        }
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            DirectoryInfo directory = new DirectoryInfo(Configer.CachePath);
+            directory.Delete(true);
+            Directory.CreateDirectory(Configer.CachePath);
+            dataGridView1.Rows.Clear();
+            addLog("Cache cleared");
+            textBox2.Text = "Select Cache to Preview";
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+        public void addFile(string name)
+        {
+            dataGridView1.Rows.Add(name);
+        }
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int rowIndex = e.RowIndex;
+            int columnIndex = e.ColumnIndex;            
+            DataGridViewCell cell = dataGridView1.Rows[rowIndex].Cells[columnIndex];
+            string value = cell.Value.ToString();
+            string filePath = Configer.CachePath + "\\" + value;
+            textBox2.Text = File.ReadAllText(filePath);
         }
     }
 }
