@@ -115,11 +115,11 @@ namespace server
         {
             if (!Directory.Exists(Configer.ServerPath))
             {
-                Directory.CreateDirectory(Configer.ServerPath);
-                if (!Directory.Exists(Configer.ServerPath+@"\splits"))
-                {
-                    Directory.CreateDirectory(Configer.ServerPath + @"\splits");
-                }
+                Directory.CreateDirectory(Configer.ServerPath);                
+            }
+            if (!Directory.Exists(Configer.ServerPath + @"\splits"))
+            {
+                Directory.CreateDirectory(Configer.ServerPath + @"\splits");
             }
             button2_Click(sender, e);
         }

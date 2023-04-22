@@ -39,7 +39,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft YaHei UI", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(78, 47);
+            this.label1.Location = new System.Drawing.Point(78, 41);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(647, 46);
             this.label1.TabIndex = 0;
@@ -49,9 +49,10 @@
             // 
             // listView1
             // 
-            this.listView1.Location = new System.Drawing.Point(49, 114);
+            this.listView1.FullRowSelect = true;
+            this.listView1.Location = new System.Drawing.Point(49, 101);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(691, 260);
+            this.listView1.Size = new System.Drawing.Size(691, 230);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
@@ -65,9 +66,9 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft YaHei UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.button1.Location = new System.Drawing.Point(347, 392);
+            this.button1.Location = new System.Drawing.Point(347, 346);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(110, 46);
+            this.button1.Size = new System.Drawing.Size(110, 41);
             this.button1.TabIndex = 2;
             this.button1.Text = "Refresh";
             this.button1.UseVisualStyleBackColor = true;
@@ -75,9 +76,9 @@
             // 
             // clientForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 397);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.label1);

@@ -231,20 +231,14 @@ namespace server
                                 {
                                     GetFileList(stream);
                                     //serverForm.addLog("GetFileList");
-                                    var thisForm = serverForm.GetInstance();
-                                    thisForm.Invoke(new Action(() => thisForm.addLog("Return file list to cache")));
                                 }
                                 else if ((String)receivedObject == "GetFileRefreshDate")
                                 {
                                     GetFileRefreshDate(stream);
-                                    var thisForm = serverForm.GetInstance();
-                                    thisForm.Invoke(new Action(() => thisForm.addLog("Sync file list with cache")));
                                 }
                                 else if ((String)receivedObject == "GetFileSplit")
                                 {
                                     GetFileSplit(stream);
-                                    var thisForm = serverForm.GetInstance();
-                                    thisForm.Invoke(new Action(() => thisForm.addLog("Return file splits to cache")));
                                 }
                             }
                             else if (Type.GetType(message.ObjectTypeString) == typeof(List<string>))

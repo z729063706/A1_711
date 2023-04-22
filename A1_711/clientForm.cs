@@ -1,4 +1,5 @@
 using shardLib;
+using System.Diagnostics;
 
 namespace client
 {
@@ -39,7 +40,7 @@ namespace client
             btn.Text = "Download";
             btn.Click += this.button_Click;
             this.listView1.Controls.Add(btn);
-            this.btn.Size = new Size(120,20);
+            this.btn.Size = new Size(120,30);
             this.listView1.BeginUpdate();
             for (int i = 0; i < F.Count; i++)
             {
@@ -48,6 +49,10 @@ namespace client
                 lvi.Text = F[i].Name;                
                 lvi.SubItems.Add(Files.sizeToString(F[i].Size));
                 lvi.SubItems.Add(F[i].Update.ToString());
+                if (File.Exists(Configer.ClientPath + @"\" + F[i].Name))
+                {
+                    F[i].DownloadStatus = "Downloaded";
+                }
                 lvi.SubItems.Add(F[i].DownloadStatus);
                 imageList1.Images.Add(Files.ByteArrayToImage(F[i].Tb));
                 this.listView1.Items.Add(lvi);
@@ -61,6 +66,14 @@ namespace client
             {
                 this.btn.Location = new Point(this.listView1.SelectedItems[0].SubItems[3].Bounds.Left, this.listView1.SelectedItems[0].SubItems[3].Bounds.Top);
                 this.btn.Visible = true;
+                if (this.listView1.SelectedItems[0].SubItems[3].Text == "Downloaded")
+                {
+                    this.btn.Text = "Open";
+                }
+                else
+                {
+                    this.btn.Text = "Download";
+                }
             }
             
         }
@@ -68,9 +81,21 @@ namespace client
         {
             int selectedIndex = this.listView1.SelectedItems[0].Index;
             Files selectedFile = this.F[selectedIndex];
-            List<string> Splits = ClientUtils.GetSplites(selectedFile.Path);
-            ClientUtils.DownloadFile(Splits, selectedFile.Path);
-            this.listView1.SelectedItems[0].SubItems[3].Text = "Downloaded";
+            if (this.btn.Text == "Download")
+            {
+                List<string> Splits = ClientUtils.GetSplites(selectedFile.Path);
+                ClientUtils.DownloadFile(Splits, selectedFile.Path);
+                this.listView1.SelectedItems[0].SubItems[3].Text = "Downloaded";
+            }
+            else
+            {
+                var openProcess = new ProcessStartInfo(selectedFile.Path)
+                {
+                    UseShellExecute = true
+                };
+                Process.Start(openProcess);
+            }
+            
         }
         private void Form1_Load(object sender, EventArgs e)
         {

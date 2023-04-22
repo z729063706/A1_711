@@ -90,8 +90,8 @@ namespace cache
             var message = new SocketMessage(splites);
             stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
             var thisForm = cacheForm.GetInstance();
-            thisForm.Invoke(new Action(() => thisForm.addLog("Downloading " + filename + " in cache size: " + inCacheByte.ToString() + "/" + totalByte.ToString() )));
-            thisForm.Invoke(new Action(() => thisForm.addLog(filename + " cache rate:" + (double)inCacheByte / totalByte * 100 + "% Please allow about 10 second for it" )));
+            thisForm.Invoke(new Action(() => thisForm.addLog("Downloading " + filename )));
+            thisForm.Invoke(new Action(() => thisForm.addLog("In cache size: " + inCacheByte.ToString() + "/" + totalByte.ToString() + " cache rate:" + (double)(inCacheByte / totalByte) * 100 + "% Please allow about 10 second for it" )));
         }
         public static void GetSplitFromServer(string splitname)
         {
