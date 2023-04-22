@@ -41,6 +41,7 @@
             this.filesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.filesBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -113,9 +114,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(20, 15);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(93, 15);
+            this.label4.Size = new System.Drawing.Size(216, 15);
             this.label4.TabIndex = 6;
-            this.label4.Text = "In Cache Spiltes:";
+            this.label4.Text = "In Cache Spiltes:                            Count: ";
             this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // dataGridView1
@@ -170,11 +171,21 @@
             this.label5.TabIndex = 9;
             this.label5.Text = "Cache Preview:";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(256, 15);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(13, 15);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "0";
+            // 
             // cacheForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 397);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.dataGridView1);
@@ -209,5 +220,6 @@
         private TextBox textBox2;
         private DataGridViewTextBoxColumn Column1;
         private Label label5;
+        private Label label6;
     }
 }

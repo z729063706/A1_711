@@ -8,6 +8,7 @@ namespace cache
         public bool isCacheRunning = false;
         public int cachePort = Configer.cachePort;
         private static cacheForm myFormInstance;
+        public int cacheCount = 0;
         public static cacheForm GetInstance()
         {
             if (myFormInstance == null || myFormInstance.IsDisposed)
@@ -27,6 +28,7 @@ namespace cache
             foreach (string file in Directory.GetFiles(Configer.CachePath))
             {
                 addFile(file.ToString().Substring(Configer.CachePath.Length + 1));
+                addCount();
             }
         }
 
@@ -95,6 +97,8 @@ namespace cache
             dataGridView1.Rows.Clear();
             addLog("Cache cleared");
             textBox2.Text = "Select Cache to Preview";
+            cacheCount = 0;
+            label6.Text = cacheCount.ToString();
         }
 
         private void label4_Click(object sender, EventArgs e)
@@ -104,6 +108,11 @@ namespace cache
         public void addFile(string name)
         {
             dataGridView1.Rows.Add(name);
+        }
+        public void addCount()
+        {
+            cacheCount = cacheCount + 1;
+            label6.Text = cacheCount.ToString();
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {

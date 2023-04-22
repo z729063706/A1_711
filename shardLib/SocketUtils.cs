@@ -22,19 +22,19 @@ namespace shardLib
             string jsonString = Encoding.UTF8.GetString(data);
             return JsonSerializer.Deserialize(jsonString, type);
         }
-        public static object SendMessage(string serverAddress, int port, object obj, int timeoutMilliseconds = 500000)
+        public static object SendMessage(string serverAddress, int port, object obj, int timeoutMilliseconds = 50000)
         {
             object responseObject = null;
-            try
+            while (responseObject == null)
             {
-                using (var client = new TcpClient())
+                try
                 {
-                    client.ReceiveBufferSize = 8192 * 1024;
-                    if (client.ConnectAsync(serverAddress, port).Wait(timeoutMilliseconds))
+                    using (var client = new TcpClient())
                     {
-                        using (var stream = client.GetStream())
+                        client.ReceiveBufferSize = 8192 * 1024;
+                        if (client.ConnectAsync(serverAddress, port).Wait(timeoutMilliseconds))
                         {
-                            while (responseObject == null)
+                            using (var stream = client.GetStream())
                             {
                                 var message = new SocketMessage
                                 {
@@ -61,20 +61,20 @@ namespace shardLib
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Connection to server timed out.");
+                        else
+                        {
+                            Console.WriteLine("Connection to server timed out.");
+                        }
                     }
                 }
-            }
-            catch (SocketException ex)
-            {
-                Console.WriteLine($"SocketException: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex.Message}");
+                catch (SocketException ex)
+                {
+                    Console.WriteLine($"SocketException: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception: {ex.Message}");
+                }
             }
             return responseObject;
         }

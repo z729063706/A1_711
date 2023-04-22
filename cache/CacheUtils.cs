@@ -57,7 +57,7 @@ namespace cache
             var message = new SocketMessage(cacheFiles);
             stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
             var thisForm = cacheForm.GetInstance();
-            thisForm.Invoke(new Action(() => thisForm.addLog("Forward GetFileList at" + t.ToString())));
+            thisForm.Invoke(new Action(() => thisForm.addLog("Forward the Cached File List at " + t.ToString())));
         }
         public static void GetSplites(NetworkStream stream, string filename)
         {
@@ -78,6 +78,7 @@ namespace cache
             }
             inCacheByte = inCacheByte / 2;
             long totalByte = 0;
+            string filenameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
             foreach (Files file in cacheFiles)
             {
                 if (file.Path == filename)
@@ -90,8 +91,9 @@ namespace cache
             var message = new SocketMessage(splites);
             stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
             var thisForm = cacheForm.GetInstance();
-            thisForm.Invoke(new Action(() => thisForm.addLog("Downloading " + filename )));
-            thisForm.Invoke(new Action(() => thisForm.addLog("In cache size: " + inCacheByte.ToString() + "/" + totalByte.ToString() + " cache rate:" + (double)(inCacheByte / totalByte) * 100 + "% Please allow about 10 second for it" )));
+            thisForm.Invoke(new Action(() => thisForm.addLog("response: "+ (double)(inCacheByte / totalByte) * 100 +"% of file " + filenameWithoutExtension + " was constructed with the cached data")));
+            //thisForm.Invoke(new Action(() => thisForm.addLog("Downloading " + filename )));
+            //thisForm.Invoke(new Action(() => thisForm.addLog("In cache size: " + inCacheByte.ToString() + "/" + totalByte.ToString() + " cache rate:" + (double)(inCacheByte / totalByte) * 100 + "% Please allow about 10 second for it" )));
         }
         public static void GetSplitFromServer(string splitname)
         {
@@ -103,6 +105,7 @@ namespace cache
             File.WriteAllBytes(splitPath, split);
             var thisForm = cacheForm.GetInstance();
             thisForm.Invoke(new Action(() => thisForm.addFile(splitname)));
+            thisForm.Invoke(new Action(() => thisForm.addCount() ));
             return;
         }
         public static void GetSplit(NetworkStream stream, string splitname)
@@ -152,7 +155,7 @@ namespace cache
                                 if ((String)receivedObject == "GetFileList")
                                 {
                                     GetFileList(stream, TT);
-                                    thisForm.Invoke(new Action(() => thisForm.addLog("Client GetFileList!")));
+                                    thisForm.Invoke(new Action(() => thisForm.addLog("user request: filelist at " + DateTime.Now.ToString() )));
                                 }
                             }
                             else if(Type.GetType(message.ObjectTypeString) == typeof(List<string>))
@@ -161,7 +164,7 @@ namespace cache
                                 if (req[0] == "GetSplites")
                                 {
                                     GetSplites(stream, req[1]);
-                                    thisForm.Invoke(new Action(() => thisForm.addLog("Client GetSplites!")));
+                                    thisForm.Invoke(new Action(() => thisForm.addLog("user request: file " + req[1] +" at " + DateTime.Now.ToString() )));
                                 }
                                 else if (req[0] == "GetSplit")
                                 {

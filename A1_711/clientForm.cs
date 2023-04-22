@@ -13,7 +13,6 @@ namespace client
         public clientForm()
         {
             InitializeComponent();
-            Listview1_Load(this, null);
             if (!Directory.Exists(Configer.ClientPath))
             {
                 Directory.CreateDirectory(Configer.ClientPath);
@@ -86,10 +85,11 @@ namespace client
                 List<string> Splits = ClientUtils.GetSplites(selectedFile.Path);
                 ClientUtils.DownloadFile(Splits, selectedFile.Path);
                 this.listView1.SelectedItems[0].SubItems[3].Text = "Downloaded";
+                this.btn.Text = "Open";
             }
             else
             {
-                var openProcess = new ProcessStartInfo(selectedFile.Path)
+                var openProcess = new ProcessStartInfo(Configer.ClientPath + @"\" + selectedFile.Name)
                 {
                     UseShellExecute = true
                 };

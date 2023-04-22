@@ -85,7 +85,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "clientForm";
-            this.Text = "Pic Downloader-yzhb687";
+            this.Text = "Client-yzhb687";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
