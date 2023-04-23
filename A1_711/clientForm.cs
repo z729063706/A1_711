@@ -81,6 +81,11 @@ namespace client
                     this.btn2.Visible = true;
                 }
             }
+            else
+            {
+                this.btn.Visible = false;
+                this.btn2.Visible = false;
+            }
             
         }
         private void button_Click(object sender, EventArgs e)
@@ -94,7 +99,8 @@ namespace client
                 this.listView1.SelectedItems[0].SubItems[3].Text = "Downloaded";
                 this.btn2.Visible = true;
             }
-            
+            //Listview1_Load(sender, e);
+
         }
         private void button2_Click(object sender, EventArgs e)
         {
