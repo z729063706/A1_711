@@ -50,9 +50,9 @@
             // listView1
             // 
             this.listView1.FullRowSelect = true;
-            this.listView1.Location = new System.Drawing.Point(49, 101);
+            this.listView1.Location = new System.Drawing.Point(39, 90);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(691, 230);
+            this.listView1.Size = new System.Drawing.Size(713, 230);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
@@ -98,6 +98,7 @@
         private ListView listView1;
         private ImageList imageList1;
         private Button btn = new Button();
+        private Button btn2 = new Button();
         private Button button1;
     }
 }

@@ -33,13 +33,21 @@ namespace client
             this.listView1.Columns.Add("Name", 250, HorizontalAlignment.Left);
             this.listView1.Columns.Add("Size", 120, HorizontalAlignment.Left);
             this.listView1.Columns.Add("Update", 160, HorizontalAlignment.Left);
-            this.listView1.Columns.Add("Download Status", 120, HorizontalAlignment.Left);
+            this.listView1.Columns.Add("Download Status", 140, HorizontalAlignment.Left);
             this.listView1.View = System.Windows.Forms.View.Details;
+
             btn.Visible = false;
             btn.Text = "Download";
             btn.Click += this.button_Click;
             this.listView1.Controls.Add(btn);
-            this.btn.Size = new Size(120,30);
+            this.btn.Size = new Size(70,30);
+
+            btn2.Visible = false;
+            btn2.Text = "Open";
+            btn2.Click += this.button2_Click;
+            this.listView1.Controls.Add(btn2);
+            this.btn2.Size = new Size(60, 30);
+
             this.listView1.BeginUpdate();
             for (int i = 0; i < F.Count; i++)
             {
@@ -63,15 +71,14 @@ namespace client
         {
             if (this.listView1.SelectedItems.Count > 0)
             {
+                this.btn2.Visible = false;
                 this.btn.Location = new Point(this.listView1.SelectedItems[0].SubItems[3].Bounds.Left, this.listView1.SelectedItems[0].SubItems[3].Bounds.Top);
                 this.btn.Visible = true;
+                this.btn2.Location = new Point(this.listView1.SelectedItems[0].SubItems[3].Bounds.Left+70, this.listView1.SelectedItems[0].SubItems[3].Bounds.Top);
+                
                 if (this.listView1.SelectedItems[0].SubItems[3].Text == "Downloaded")
                 {
-                    this.btn.Text = "Open";
-                }
-                else
-                {
-                    this.btn.Text = "Download";
+                    this.btn2.Visible = true;
                 }
             }
             
@@ -85,17 +92,19 @@ namespace client
                 List<string> Splits = ClientUtils.GetSplites(selectedFile.Path);
                 ClientUtils.DownloadFile(Splits, selectedFile.Path);
                 this.listView1.SelectedItems[0].SubItems[3].Text = "Downloaded";
-                this.btn.Text = "Open";
-            }
-            else
-            {
-                var openProcess = new ProcessStartInfo(Configer.ClientPath + @"\" + selectedFile.Name)
-                {
-                    UseShellExecute = true
-                };
-                Process.Start(openProcess);
+                this.btn2.Visible = true;
             }
             
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = this.listView1.SelectedItems[0].Index;
+            Files selectedFile = this.F[selectedIndex];
+            var openProcess = new ProcessStartInfo(Configer.ClientPath + @"\" + selectedFile.Name)
+            {
+                UseShellExecute = true
+            };
+            Process.Start(openProcess);
         }
         private void Form1_Load(object sender, EventArgs e)
         {

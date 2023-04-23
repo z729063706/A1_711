@@ -132,6 +132,12 @@ namespace server
             string path = openFileDialog1.FileName;
             string filename = path.Split('\\')[path.Split('\\').Length - 1];
             string newpath = ServerPath + "\\" + filename;
+            if (File.Exists(newpath))
+            {
+                addLog("File exists, will be overwritten");
+                File.Delete(newpath);
+                ServerUtils.deleteSplite(newpath);
+            }
             File.Copy(path, newpath);
             button2_Click(sender, e);
             addLog("File Uploading and Splitting");

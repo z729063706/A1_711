@@ -128,6 +128,7 @@ namespace server
                     }
                     blockSize = blockSize + 1;
                 }
+                stream.Dispose();
             }
             return blockSize;
         }
@@ -167,12 +168,24 @@ namespace server
                     buffer = new byte[chuckSize];
                 }
                 imageCache.Add(imagePath, chunkHashs);
-                //imageStream.Close();
+                imageStream.Dispose();
             }
             imageCache = ImageCache;
             return ImageCache;
         }
 
+        public static void deleteSplite(string filePath)
+        {
+            imageCache.Remove(filePath);
+            foreach (Files f in cacheFiles)
+            {
+                if (f.Path == filePath)
+                {
+                    cacheFiles.Remove(f);
+                    break;
+                }
+            }
+        }
 
 
         public static async void SpiltInit()

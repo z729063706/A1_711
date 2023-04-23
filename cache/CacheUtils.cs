@@ -91,7 +91,7 @@ namespace cache
             var message = new SocketMessage(splites);
             stream.Write(SocketUtils.SerializeObject(message), 0, SocketUtils.SerializeObject(message).Length);
             var thisForm = cacheForm.GetInstance();
-            thisForm.Invoke(new Action(() => thisForm.addLog("response: "+ (double)(inCacheByte / totalByte) * 100 +"% of file " + filenameWithoutExtension + " was constructed with the cached data")));
+            thisForm.Invoke(new Action(() => thisForm.addLog("response: "+ (double)inCacheByte / (double) totalByte * 100 +"% of file " + filenameWithoutExtension + " was constructed with the cached data")));
             //thisForm.Invoke(new Action(() => thisForm.addLog("Downloading " + filename )));
             //thisForm.Invoke(new Action(() => thisForm.addLog("In cache size: " + inCacheByte.ToString() + "/" + totalByte.ToString() + " cache rate:" + (double)(inCacheByte / totalByte) * 100 + "% Please allow about 10 second for it" )));
         }

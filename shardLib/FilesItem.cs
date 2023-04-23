@@ -79,11 +79,22 @@ namespace shardLib
                 try
                 { 
                     Image.GetThumbnailImageAbort myCallback = new Image.GetThumbnailImageAbort(ThumbnailCallback);
-                    Image image = Image.FromFile(file);
+                    /*Image image = Image.FromFile(file);
                     Image tb = image.GetThumbnailImage(32, 32, myCallback, IntPtr.Zero);
                     FileInfo fileinfo = new FileInfo(file);
                     Files tmp = new Files(file, fileinfo.Length, fileinfo.LastWriteTime, tb);
-                    files.Add(tmp);
+                    files.Add(tmp);*/
+                    using (Image image = Image.FromFile(file))
+                    {
+                        using (Image tb = image.GetThumbnailImage(32, 32, myCallback, IntPtr.Zero))
+                        {
+                            FileInfo fileinfo = new FileInfo(file);
+                            Files tmp = new Files(file, fileinfo.Length, fileinfo.LastWriteTime, tb);
+                            files.Add(tmp);
+                            tb.Dispose();
+                        }
+                        image.Dispose();
+                    }
                 }
                 catch
                 {

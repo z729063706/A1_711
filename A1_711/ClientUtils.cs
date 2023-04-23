@@ -57,6 +57,18 @@ namespace client
         {
             string filename = filepath.Split('\\').Last();
             string filePath = clientPath + @"\" + filename;
+            if (File.Exists(filepath))
+            {
+                DialogResult result = MessageBox.Show("If file already exists it will be overwritten, do you want to continue?", "Tip", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    File.Delete(filepath);
+                }
+                else
+                {
+                    return;
+                }
+            }
             byte[] file = new byte[0];
             foreach (string split in splites)
             {
